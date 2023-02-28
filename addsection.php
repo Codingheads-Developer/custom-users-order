@@ -42,9 +42,9 @@ function users_table()
     $args = [
         'fields' => $user_fields,
         'limit' => 9999,
-        'orderby' => 'meta_value',
+        'orderby' => 'meta_value_num',
         'order' => 'ASC',
-        'subpress_filters' => true,
+        'meta_key' => 'order',
 
         'meta_query' => [
             'relation' => 'OR',
