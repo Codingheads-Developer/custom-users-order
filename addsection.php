@@ -32,6 +32,7 @@ function users_table()
 
     /* Form 2 (Drag And Drop Form) */
     $ulist .= '<form name="frmCustomUser" id="frmCustomUser" method="post" action="?page=addsection">
+    <input type="submit" name="send" value="Update" id="send" class="button-primary" />
 	<ul class="usersheading">';
     $ulist .= '<li class="lineitem"><span>Username</span><span>Name</span></li>';
     $ulist .= '</ul>';
@@ -54,14 +55,42 @@ function users_table()
             ],
             [
                 'key' => 'order',
+                'compare' => 'EXISTS',
+            ],
+            [
+                'key' => 'order',
                 'compare' => 'NOT EXISTS',
             ]
         ]
     ];
     $current_list_users = new WP_User_Query($args);
 
-    if (!empty($current_list_users->get_results())) {
-        foreach ($current_list_users->get_results() as $k => $user) {
+    /**
+     * Use this array of IDs to filter out the users already added to the list
+     */
+    $users = $current_list_users->get_results();
+    $users_id = array_map(function ($o) {
+        return $o->ID;
+    }, $users);
+
+    /**
+     * Second query to get all the items that are not received in the first try
+     */
+    $args = [
+        'fields' => $user_fields,
+        'limit' => 9999,
+        'exclude' => $users_id,
+    ];
+    $current_list_users = new WP_User_Query($args);
+
+    /**
+     * Create the final users array to display
+     */
+    $users = array_merge($users, $current_list_users->get_results());
+
+
+    if (!empty($users)) {
+        foreach ($users as $k => $user) {
 
             $u = get_userdata($user->ID);
 

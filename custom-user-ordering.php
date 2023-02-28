@@ -43,9 +43,6 @@ function custom_display_style()
     wp_enqueue_style('customstyle', plugin_dir_url(__FILE__) . 'css/customdisplay.css');
 }
 
-add_filter('widget_text', 'do_shortcode');
-
-
 add_action('admin_menu', 'manageuser');
 function manageuser()
 {
